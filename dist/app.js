@@ -12,7 +12,15 @@ var app = express();
 
 var server = require('http').createServer(app);
 
-var io = require('socket.io')(server);
+var client = process.env.NODE_ENV === 'production' ? "https://react-spotify-quiz.herokuapp.com" : "http://localhost:3000";
+
+var io = require('socket.io')(server, {
+  cors: {
+    origin: client,
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
 var players = [];
 var games = {};
