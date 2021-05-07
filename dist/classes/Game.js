@@ -7,6 +7,8 @@ exports["default"] = void 0;
 
 var _getRandomString = _interopRequireDefault(require("./helper/getRandomString"));
 
+var _QuestionFactory = _interopRequireDefault(require("./QuestionFactory"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -30,13 +32,14 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var Game = /*#__PURE__*/function () {
-  function Game(host) {
+  function Game(host, top50) {
     _classCallCheck(this, Game);
 
     this.host = host.name;
     this.players = [host];
     this.points = _defineProperty({}, host.name, 0);
     this.id = (0, _getRandomString["default"])(6);
+    this.questionFactory = new _QuestionFactory["default"](top50);
   }
 
   _createClass(Game, [{
@@ -50,6 +53,11 @@ var Game = /*#__PURE__*/function () {
       this.players = this.players.filter(function (player) {
         return player != oldPlayer;
       });
+    }
+  }, {
+    key: "question",
+    value: function question() {
+      return this.questionFactory.randomQuestion(players);
     }
   }]);
 
