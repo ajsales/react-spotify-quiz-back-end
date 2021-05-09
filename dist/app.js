@@ -18,6 +18,7 @@ app.use(function (req, res, next) {
   next();
 });
 var client = process.env.NODE_ENV === 'production' ? "http://react-spotify-quiz.herokuapp.com" : "http://localhost:3000";
+console.log(client);
 
 var io = require('socket.io')(server, {
   cors: {
