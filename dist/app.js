@@ -30,30 +30,28 @@ var io = require('socket.io')(server, {
 var players = {};
 var games = {};
 var top50 = {};
+var callbackNamespace = io.of('/callback');
+var roomsNamespace = io.of('/rooms');
 var gameNamespaces = io.of(/^\/game\/\w{6}$/);
 io.on('connection', function (socket) {
-  console.log('A user connected.');
-  socket.on('disconnect', function () {
-    console.log('A user disconnected.');
-  });
-  socket.on('newPlayer', function (playerData) {
+  console.log('a user connected');
+  socket.on('newPlayer', function (playerData, extraData, callback) {
     var player = new _Player["default"](playerData);
     players[player.id] = player;
+    top50 = extraData;
     console.log('A new player connected:', player.name);
+    callback();
   });
-  socket.on('extraData', function (data) {
-    top50 = data;
-  });
-  socket.on('roomsRequest', function () {
-    var rooms = Object.keys(games);
-    socket.emit('availableRooms', rooms);
-    console.log(socket.id, 'requesting rooms.');
-  });
-  socket.on('newRoom', function (playerId) {
+});
+roomsNamespace.on('connection', function (socket) {
+  var rooms = Object.keys(games);
+  socket.emit('availableRooms', rooms);
+  console.log(socket.id, 'requesting rooms.');
+  socket.on('newRoom', function (playerId, callback) {
     var host = players[playerId];
     var game = new _Game["default"](host, top50);
     games[game.id] = game;
-    socket.emit('joinGame', game.id);
+    callback(game.id);
     console.log('New game started:', game.id);
   });
 });
@@ -64,6 +62,7 @@ gameNamespaces.on('connection', function (socket) {
   socket.on('questionRequest', function () {
     var game = games[gameId];
     socket.emit('newQuestion', game.question());
+    console.log('Question request received!');
   });
 });
 server.listen(process.env.PORT || 8081, function () {
