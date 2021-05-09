@@ -11,7 +11,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 function questionFactory(top50) {
   var randomQuestion = function randomQuestion(players) {
-    var questions = [IdentifyFavoriteArtist];
+    var questions = [IdentifyFavoriteSong, IdentifyFavoriteArtist];
 
     if (players.length >= 4) {
       questions.concat([IdentifyPlayerFromSong, IdentifyPlayerFromArtist]);
@@ -54,8 +54,8 @@ function questionFactory(top50) {
 
     var preview = _getRandomArrEl(artist.songs).preview;
 
-    artists = artists.map(function (artist) {
-      return artist.name;
+    artists = artists.map(function (a) {
+      return a.name;
     });
     var player = players.filter(function (player) {
       return player.likesAnyArtist(artists);
@@ -64,8 +64,8 @@ function questionFactory(top50) {
     return {
       question: "What is one of ".concat(player.name, "'s ").concat(option, " Top 10 artists?"),
       choices: artists,
-      answers: artists.filter(function (artist) {
-        return player.likesArtist(artist);
+      answers: artists.filter(function (a) {
+        return player.likesArtist(a);
       }),
       song: preview,
       img: player.img

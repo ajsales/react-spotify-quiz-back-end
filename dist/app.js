@@ -33,8 +33,7 @@ var top50 = {};
 var callbackNamespace = io.of('/callback');
 var roomsNamespace = io.of('/rooms');
 var gameNamespaces = io.of(/^\/game\/\w{6}$/);
-io.on('connection', function (socket) {
-  console.log('a user connected');
+callbackNamespace.on('connection', function (socket) {
   socket.on('newPlayer', function (playerData, extraData, callback) {
     var player = new _Player["default"](playerData);
     players[player.id] = player;

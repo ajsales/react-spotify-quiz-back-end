@@ -97,7 +97,7 @@ var Player = /*#__PURE__*/function () {
   }, {
     key: "likesArtist",
     value: function likesArtist(artist) {
-      var allArtists = this.artists['recent'].concat(this.songs['allTime']);
+      var allArtists = this.artists['recent'].concat(this.artists['allTime']);
       return allArtists.map(function (a) {
         return a.name;
       }).includes(artist);
