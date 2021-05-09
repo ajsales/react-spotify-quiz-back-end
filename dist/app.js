@@ -14,13 +14,12 @@ var server = require('http').createServer(app);
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "https://react-spotify-quiz.herokuapp.com");
-  res.header("Vary", "Accept");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 var client = process.env.NODE_ENV === 'production' ? "http://react-spotify-quiz.herokuapp.com" : "http://localhost:3000";
 
-var io = require('socket.io')(server, {
+var io = require('socket.io')(client, {
   cors: {
     origin: client,
     methods: ["GET", "POST"],
