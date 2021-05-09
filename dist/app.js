@@ -22,8 +22,7 @@ var client = process.env.NODE_ENV === 'production' ? "http://react-spotify-quiz.
 var io = require('socket.io')(server, {
   cors: {
     origin: client,
-    methods: ["GET", "POST"],
-    credentials: true
+    methods: ["GET", "POST"]
   }
 });
 
