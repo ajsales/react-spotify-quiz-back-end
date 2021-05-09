@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = questionFactory;
+exports["default"] = QuestionFactory;
 
 var _getRandomInt = _interopRequireDefault(require("./helper/getRandomInt"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function questionFactory(top50) {
+function QuestionFactory(top50) {
   var randomQuestion = function randomQuestion(players) {
     var questions = [IdentifyFavoriteSong, IdentifyFavoriteArtist];
 
