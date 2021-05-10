@@ -7,7 +7,7 @@ exports["default"] = void 0;
 
 var _getRandomString = _interopRequireDefault(require("./helper/getRandomString"));
 
-var _QuestionFactory = _interopRequireDefault(require("./QuestionFactory"));
+var _questionFactory = _interopRequireDefault(require("./questionFactory"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -39,7 +39,7 @@ var Game = /*#__PURE__*/function () {
     this.players = [host];
     this.points = _defineProperty({}, host.name, 0);
     this.id = (0, _getRandomString["default"])(6);
-    this.questionFactory = (0, _QuestionFactory["default"])(top50);
+    this.questionFactory = (0, _questionFactory["default"])(top50);
   }
   /**
    * Adds player to game's list of players
