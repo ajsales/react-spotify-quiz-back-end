@@ -36,14 +36,14 @@ var io = require('socket.io')(server, {
 /**
  * Dictionary of all players in server.
  *
- * @typedef {Object.<string, Player>}
+ * @typedef {Object.<string, Player>} players
  * @property {Player} playerId Instance of the player
  */
 var players = {};
 /**
  * Dictionary of all games in server.
  *
- * @typedef {Object.<string, Game>}
+ * @typedef {Object.<string, Game>} games
  * @property {Game} gameId Instance of the game
  */
 
@@ -51,7 +51,7 @@ var games = {};
 /**
  * Extra Top 50 data to be placed in each game.
  *
- * @typedef {Object} 
+ * @typedef {Object} top50
  * @property {Object[]} songs Songs in the Top 50 - USA playlist
  * @property {Object[]} artists Artists of the above songs
  */

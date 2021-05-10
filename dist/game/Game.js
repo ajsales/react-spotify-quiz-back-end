@@ -41,12 +41,24 @@ var Game = /*#__PURE__*/function () {
     this.id = (0, _getRandomString["default"])(6);
     this.questionFactory = (0, _QuestionFactory["default"])(top50);
   }
+  /**
+   * Adds player to game's list of players
+   * 
+   * @param {string} newPlayer The player to be added
+   */
+
 
   _createClass(Game, [{
     key: "addPlayer",
     value: function addPlayer(newPlayer) {
       this.players = [].concat(_toConsumableArray(players), [player]);
     }
+    /**
+     * Removes player from game's list of player
+     * 
+     * @param {string} oldPlayer The player to be removed
+     */
+
   }, {
     key: "removePlayer",
     value: function removePlayer(oldPlayer) {
@@ -54,6 +66,10 @@ var Game = /*#__PURE__*/function () {
         return player != oldPlayer;
       });
     }
+    /**
+     * Returns a random question.
+     */
+
   }, {
     key: "question",
     value: function question() {

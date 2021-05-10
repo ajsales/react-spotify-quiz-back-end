@@ -31,6 +31,12 @@ var Player = /*#__PURE__*/function () {
     this.songs = playerData.songs;
     this.artists = playerData.artists;
   }
+  /**
+   * Returns random song from given list.
+   * 
+   * @param {string} option The given song list 
+   */
+
 
   _createClass(Player, [{
     key: "pickRandomSong",
@@ -38,32 +44,24 @@ var Player = /*#__PURE__*/function () {
       var index = (0, _getRandomInt["default"])(10);
       return this.songs[option][index];
     }
-  }, {
-    key: "randomRecentSong",
-    get: function get() {
-      return this.pickRandomSong('recent');
-    }
-  }, {
-    key: "randomAllTimeSong",
-    get: function get() {
-      return this.pickRandomSong('allTime');
-    }
+    /**
+     * Returns random artist from given list.
+     * 
+     * @param {string} option The given artist list 
+     */
+
   }, {
     key: "pickRandomArtist",
     value: function pickRandomArtist(option) {
       var index = (0, _getRandomInt["default"])(10);
       return this.artists[option][index];
     }
-  }, {
-    key: "randomRecentArtist",
-    get: function get() {
-      return this.pickRandomArtist('recent');
-    }
-  }, {
-    key: "randomAllTimeArtist",
-    get: function get() {
-      return this.pickRandomArtist('allTime');
-    }
+    /**
+     * Returns true if player has song in their Top 10 lists
+     * 
+     * @param {string} song The song to be checked 
+     */
+
   }, {
     key: "likesSong",
     value: function likesSong(song) {
@@ -72,6 +70,12 @@ var Player = /*#__PURE__*/function () {
         return s.title + ' by ' + s.artists;
       }).includes(song);
     }
+    /**
+     * Returns true if player has any of the songs in their Top 10 lists
+     * 
+     * @param {string} songs The songs to be checked 
+     */
+
   }, {
     key: "likesAnySong",
     value: function likesAnySong(songs) {
@@ -94,6 +98,12 @@ var Player = /*#__PURE__*/function () {
 
       return false;
     }
+    /**
+     * Returns true if player has artist in their Top 10 lists
+     * 
+     * @param {string} artist The artist to be checked 
+     */
+
   }, {
     key: "likesArtist",
     value: function likesArtist(artist) {
@@ -102,6 +112,12 @@ var Player = /*#__PURE__*/function () {
         return a.name;
       }).includes(artist);
     }
+    /**
+     * Returns true if player has any of the artists in their Top 10 lists
+     * 
+     * @param {string} artists The artists to be checked 
+     */
+
   }, {
     key: "likesAnyArtist",
     value: function likesAnyArtist(artists) {
