@@ -41,6 +41,14 @@ var io = require('socket.io')(server, {
  */
 var players = {};
 /**
+ * Dictionary mapping each socket ID to their corresponding player ID.
+ *
+ * @typedef {Object.<string, string>} socketToPlayer
+ * @property {Player} socketId The corresponding player ID
+ */
+
+var socketToPlayer = {};
+/**
  * Dictionary of all games in server.
  *
  * @typedef {Object.<string, Game>} games
@@ -96,17 +104,31 @@ gameNamespaces.on('connection', function (socket) {
   var namespace = socket.nsp;
   var gameId = namespace.name.substring(6);
   var game = games[gameId];
-  console.log('Someone connected to Game', gameId);
-  socket.on('joinGame', function (playerId) {
+  socket.on('joinGame', function (playerId, callback) {
     var player = players[playerId];
     game.addPlayer(player);
-    namespace.emit('currentPlayers', game.players);
+    namespace.emit('currentPlayers', game.currentPlayers);
+    callback();
+    socketToPlayer[socket.id] = playerId;
     console.log('A new player joined:', player.name);
+  });
+  socket.on('disconnecting', function () {
+    var playerId = socketToPlayer[socket.id];
+    var player = players[playerId];
+    game.removePlayer(player);
+    namespace.emit('currentPlayers', game.currentPlayers);
+    console.log('A player left:', player.name);
   }); // Sends question to game
 
   socket.on('questionRequest', function () {
     socket.emit('newQuestion', game.question());
     console.log('Question request received!');
+  });
+  socket.on('answeredQuestion', function (correct, timer) {
+    var playerId = socketToPlayer[socket.id];
+    var player = players[playerId];
+    game.answerQuestion(player, correct, timer);
+    namespace.emit('currentPlayers', game.currentPlayers);
   });
 });
 server.listen(process.env.PORT || 8081, function () {

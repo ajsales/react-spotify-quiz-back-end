@@ -29,20 +29,37 @@ var Game = /*#__PURE__*/function () {
     this.id = (0, _getRandomString["default"])(6);
     this.questionFactory = (0, _questionFactory["default"])(top50);
   }
-  /**
-   * Adds player to game's list of players
-   * 
-   * @param {Player} newPlayer The player to be added
-   */
-
 
   _createClass(Game, [{
+    key: "currentPlayers",
+    get: function get() {
+      var _this = this;
+
+      return this.players.map(function (player) {
+        return {
+          name: player.name,
+          img: player.img,
+          points: _this.points[player.name]
+        };
+      });
+    }
+    /**
+     * Adds player to game's list of players
+     * 
+     * @param {Player} newPlayer The player to be added
+     */
+
+  }, {
     key: "addPlayer",
     value: function addPlayer(newPlayer) {
       if (!this.players.map(function (p) {
         return p.name;
       }).includes(newPlayer.name)) {
         this.players.push(newPlayer);
+      }
+
+      if (!Object.keys(this.points).includes(newPlayer.name)) {
+        this.points[newPlayer.name] = 0;
       }
     }
     /**
@@ -65,7 +82,27 @@ var Game = /*#__PURE__*/function () {
   }, {
     key: "question",
     value: function question() {
-      return this.questionFactory(this.players);
+      var _this$questionFactory = this.questionFactory(this.players),
+          questionObj = _this$questionFactory.questionObj,
+          pointCalculator = _this$questionFactory.pointCalculator;
+
+      this.pointCalculator = pointCalculator;
+      this.answered = {};
+
+      for (var player in this.players) {
+        this.answered[player.name] = false;
+      }
+
+      return questionObj;
+    }
+  }, {
+    key: "answerQuestion",
+    value: function answerQuestion(player, correct, timer) {
+      this.answered[player.name] = true;
+
+      if (correct) {
+        this.points[player.name] += this.pointCalculator(player, timer);
+      }
     }
   }]);
 

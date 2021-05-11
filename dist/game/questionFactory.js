@@ -55,7 +55,7 @@ function QuestionFactory(top50) {
       return player.likesAnySong(songs);
     })[0];
     if (option == 'allTime') option = 'all-time';
-    return {
+    var questionObj = {
       question: "What is one of ".concat(player.name, "'s ").concat(option, " Top 10 songs?"),
       choices: songs,
       answers: songs.filter(function (song) {
@@ -63,6 +63,19 @@ function QuestionFactory(top50) {
       }),
       song: preview,
       img: player.img
+    };
+
+    var pointCalculator = function pointCalculator(answerer, timer) {
+      if (answerer === player.name) {
+        return timer * 0.75;
+      } else {
+        return timer;
+      }
+    };
+
+    return {
+      questionObj: questionObj,
+      pointCalculator: pointCalculator
     };
   };
   /**
@@ -88,7 +101,7 @@ function QuestionFactory(top50) {
       return player.likesAnyArtist(artists);
     })[0];
     if (option == 'allTime') option = 'all-time';
-    return {
+    var questionObj = {
       question: "What is one of ".concat(player.name, "'s ").concat(option, " Top 10 artists?"),
       choices: artists,
       answers: artists.filter(function (a) {
@@ -96,6 +109,19 @@ function QuestionFactory(top50) {
       }),
       song: preview,
       img: player.img
+    };
+
+    var pointCalculator = function pointCalculator(answerer, timer) {
+      if (answerer === player.name) {
+        return timer * 0.75;
+      } else {
+        return timer;
+      }
+    };
+
+    return {
+      questionObj: questionObj,
+      pointCalculator: pointCalculator
     };
   };
   /**
