@@ -11,18 +11,6 @@ var _questionFactory = _interopRequireDefault(require("./questionFactory"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -44,26 +32,30 @@ var Game = /*#__PURE__*/function () {
   /**
    * Adds player to game's list of players
    * 
-   * @param {string} newPlayer The player to be added
+   * @param {Player} newPlayer The player to be added
    */
 
 
   _createClass(Game, [{
     key: "addPlayer",
     value: function addPlayer(newPlayer) {
-      this.players = [].concat(_toConsumableArray(players), [player]);
+      if (!this.players.map(function (p) {
+        return p.name;
+      }).includes(newPlayer.name)) {
+        this.players.push(newPlayer);
+      }
     }
     /**
      * Removes player from game's list of player
      * 
-     * @param {string} oldPlayer The player to be removed
+     * @param {Player} oldPlayer The player to be removed
      */
 
   }, {
     key: "removePlayer",
     value: function removePlayer(oldPlayer) {
       this.players = this.players.filter(function (player) {
-        return player != oldPlayer;
+        return player.name !== oldPlayer.name;
       });
     }
     /**

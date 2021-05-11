@@ -95,10 +95,16 @@ gameNamespaces.on('connection', function (socket) {
   // Gets specific game
   var namespace = socket.nsp;
   var gameId = namespace.name.substring(6);
-  console.log('Someone connected to Game', gameId); // Sends question to game
+  var game = games[gameId];
+  console.log('Someone connected to Game', gameId);
+  socket.on('joinGame', function (playerId) {
+    var player = players[playerId];
+    game.addPlayer(player);
+    namespace.emit('currentPlayers', game.players);
+    console.log('A new player joined:', player.name);
+  }); // Sends question to game
 
   socket.on('questionRequest', function () {
-    var game = games[gameId];
     socket.emit('newQuestion', game.question());
     console.log('Question request received!');
   });
