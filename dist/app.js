@@ -121,7 +121,10 @@ gameNamespaces.on('connection', function (socket) {
   }); // Sends question to game
 
   socket.on('questionRequest', function () {
-    socket.emit('newQuestion', game.question());
+    var question = game.question();
+    namespace.emit('newQuestion', question);
+    namespace.emit('playSong', question.song);
+    namespace.emit('startTimer');
     console.log('Question request received!');
   });
   socket.on('answeredQuestion', function (correct, timer) {
