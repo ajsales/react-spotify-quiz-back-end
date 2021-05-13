@@ -55,7 +55,7 @@ function QuestionFactory(top50) {
       return player.likesAnySong(songs);
     });
 
-    var player = _getRandomArrEl(filteredPlayers);
+    var player = _getRandomArrEl(players);
 
     var questionObj = {
       question: "What is one of ".concat(player.name, "'s ").concat(option, " Top 10 songs?"),
@@ -103,7 +103,7 @@ function QuestionFactory(top50) {
       return player.likesAnyArtist(artists);
     });
 
-    var player = _getRandomArrEl(filteredPlayers);
+    var player = _getRandomArrEl(players);
 
     var questionObj = {
       question: "What is one of ".concat(player.name, "'s ").concat(option, " Top 10 artists?"),

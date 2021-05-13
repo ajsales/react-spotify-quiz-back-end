@@ -105,10 +105,19 @@ gameNamespaces.on('connection', function (socket) {
   var gameId = namespace.name.substring(6);
   var game = games[gameId];
 
-  var sendNewQuestion = function sendNewQuestion(question) {
-    namespace.emit('newQuestion', question);
-    namespace.emit('playSong', question.song);
-    namespace.emit('startTimer');
+  var sendNewQuestion = function sendNewQuestion() {
+    if (game.pastQuestions.length < 10) {
+      var question = game.question();
+      namespace.emit('newQuestion', question);
+      namespace.emit('playSong', question.song);
+      namespace.emit('startTimer');
+    } else {
+      endGame();
+    }
+  };
+
+  var endGame = function endGame() {
+    namespace.emit('endGame');
   };
 
   socket.on('joinGame', function (playerId, callback) {
@@ -125,19 +134,26 @@ gameNamespaces.on('connection', function (socket) {
     game.removePlayer(player);
     namespace.emit('currentPlayers', game.currentPlayers);
     console.log('A player left:', player.name);
-  });
-  socket.on('startGame', function () {}); // Sends question to game
 
-  socket.on('questionRequest', function () {
-    var question = game.question();
-    sendNewQuestion(question);
-    console.log('Question request received!');
+    if (game.isEveryoneFinished()) {
+      sendNewQuestion();
+    }
+  });
+  socket.on('startGame', function () {
+    game.reset();
+    sendNewQuestion();
+    console.log('Game starting!');
   });
   socket.on('answeredQuestion', function (correct, timer, choice) {
     var playerId = socketToPlayer[socket.id];
     var player = players[playerId];
     game.answerQuestion(player, correct, timer, choice);
     namespace.emit('currentPlayers', game.currentPlayers);
+
+    if (game.isEveryoneFinished()) {
+      console.log('people should be finished!!');
+      sendNewQuestion();
+    }
   });
 });
 server.listen(process.env.PORT || 8081, function () {

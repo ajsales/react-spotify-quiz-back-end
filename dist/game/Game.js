@@ -34,6 +34,7 @@ var Game = /*#__PURE__*/function () {
     this.points = _defineProperty({}, host.name, 0);
     this.id = (0, _getRandomString["default"])(6);
     this.questionFactory = (0, _questionFactory["default"])(top50);
+    this.answered = {};
     this.pastQuestions = [];
   }
 
@@ -65,7 +66,7 @@ var Game = /*#__PURE__*/function () {
         this.players.push(newPlayer);
       }
 
-      if (!Object.keys(this.points).includes(newPlayer.name)) {
+      if (!(newPlayer.name in this.points)) {
         this.points[newPlayer.name] = 0;
       }
     }
@@ -81,6 +82,10 @@ var Game = /*#__PURE__*/function () {
       this.players = this.players.filter(function (player) {
         return player.name !== oldPlayer.name;
       });
+
+      if (oldPlayer.name in this.answered) {
+        delete this.answered[oldPlayer.name];
+      }
     }
     /**
      * Returns a random question.
@@ -100,10 +105,19 @@ var Game = /*#__PURE__*/function () {
       }
 
       this.pointCalculator = pointCalculator;
-      this.answered = {};
 
-      for (var player in this.players) {
-        this.answered[player.name] = false;
+      var _iterator = _createForOfIteratorHelper(this.players),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var player = _step.value;
+          this.answered[player.name] = false;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
       }
 
       this.pastQuestions.push(questionObj);
@@ -118,6 +132,26 @@ var Game = /*#__PURE__*/function () {
         this.points[player.name] += this.pointCalculator(player, timer);
       }
     }
+  }, {
+    key: "isEveryoneFinished",
+    value: function isEveryoneFinished() {
+      for (var player in this.answered) {
+        if (!this.answered[player]) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+  }, {
+    key: "reset",
+    value: function reset() {
+      for (var player in this.points) {
+        this.points[player] = 0;
+      }
+
+      this.pastQuestions = [];
+    }
   }]);
 
   return Game;
@@ -126,21 +160,21 @@ var Game = /*#__PURE__*/function () {
 exports["default"] = Game;
 
 var askedAlready = function askedAlready(question, questionList) {
-  var _iterator = _createForOfIteratorHelper(questionList),
-      _step;
+  var _iterator2 = _createForOfIteratorHelper(questionList),
+      _step2;
 
   try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var pastQuestion = _step.value;
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var pastQuestion = _step2.value;
 
       if (areQuestionsEqual(question, pastQuestion)) {
         return true;
       }
     }
   } catch (err) {
-    _iterator.e(err);
+    _iterator2.e(err);
   } finally {
-    _iterator.f();
+    _iterator2.f();
   }
 
   return false;
@@ -153,18 +187,18 @@ var areQuestionsEqual = function areQuestionsEqual(q1, q2) {
 var areArraysEqual = function areArraysEqual(arr1, arr2) {
   if (arr1.length !== arr2.length) return false;
 
-  var _iterator2 = _createForOfIteratorHelper(arr1),
-      _step2;
+  var _iterator3 = _createForOfIteratorHelper(arr1),
+      _step3;
 
   try {
-    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-      var a = _step2.value;
+    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+      var a = _step3.value;
       if (!arr2.includes(a)) return false;
     }
   } catch (err) {
-    _iterator2.e(err);
+    _iterator3.e(err);
   } finally {
-    _iterator2.f();
+    _iterator3.f();
   }
 
   return true;
