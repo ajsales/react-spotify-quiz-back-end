@@ -133,10 +133,10 @@ gameNamespaces.on('connection', function (socket) {
     sendNewQuestion(question);
     console.log('Question request received!');
   });
-  socket.on('answeredQuestion', function (correct, timer) {
+  socket.on('answeredQuestion', function (correct, timer, choice) {
     var playerId = socketToPlayer[socket.id];
     var player = players[playerId];
-    game.answerQuestion(player, correct, timer);
+    game.answerQuestion(player, correct, timer, choice);
     namespace.emit('currentPlayers', game.currentPlayers);
   });
 });
