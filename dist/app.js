@@ -104,6 +104,13 @@ gameNamespaces.on('connection', function (socket) {
   var namespace = socket.nsp;
   var gameId = namespace.name.substring(6);
   var game = games[gameId];
+
+  var sendNewQuestion = function sendNewQuestion(question) {
+    namespace.emit('newQuestion', question);
+    namespace.emit('playSong', question.song);
+    namespace.emit('startTimer');
+  };
+
   socket.on('joinGame', function (playerId, callback) {
     var player = players[playerId];
     game.addPlayer(player);
@@ -118,13 +125,12 @@ gameNamespaces.on('connection', function (socket) {
     game.removePlayer(player);
     namespace.emit('currentPlayers', game.currentPlayers);
     console.log('A player left:', player.name);
-  }); // Sends question to game
+  });
+  socket.on('startGame', function () {}); // Sends question to game
 
   socket.on('questionRequest', function () {
     var question = game.question();
-    namespace.emit('newQuestion', question);
-    namespace.emit('playSong', question.song);
-    namespace.emit('startTimer');
+    sendNewQuestion(question);
     console.log('Question request received!');
   });
   socket.on('answeredQuestion', function (correct, timer) {

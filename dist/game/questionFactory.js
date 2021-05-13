@@ -66,7 +66,7 @@ function QuestionFactory(top50) {
     };
 
     var pointCalculator = function pointCalculator(answerer, timer) {
-      if (answerer === player.name) {
+      if (answerer.name === player.name) {
         return timer * 0.75;
       } else {
         return timer;
@@ -112,7 +112,7 @@ function QuestionFactory(top50) {
     };
 
     var pointCalculator = function pointCalculator(answerer, timer) {
-      if (answerer === player.name) {
+      if (answerer.name === player.name) {
         return timer * 0.75;
       } else {
         return timer;
