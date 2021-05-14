@@ -69,9 +69,9 @@ function QuestionFactory(top50) {
 
     var pointCalculator = function pointCalculator(answerer, timer, choice) {
       if (answerer.name === player.name) {
-        return timer * 0.75;
+        return timer * 0.75 * 4;
       } else {
-        return timer;
+        return timer * 4;
       }
     };
 
@@ -117,9 +117,9 @@ function QuestionFactory(top50) {
 
     var pointCalculator = function pointCalculator(answerer, timer, choice) {
       if (answerer.name === player.name) {
-        return timer * 0.75;
+        return timer * 0.75 * 4;
       } else {
-        return timer;
+        return timer * 4;
       }
     };
 
@@ -154,9 +154,9 @@ function QuestionFactory(top50) {
 
     var pointCalculator = function pointCalculator(answerer, timer, choice) {
       if (answerer.name === choice) {
-        return timer * 0.75;
+        return timer * 0.75 * 4;
       } else {
-        return timer;
+        return timer * 4;
       }
     };
 
@@ -193,9 +193,9 @@ function QuestionFactory(top50) {
 
     var pointCalculator = function pointCalculator(answerer, timer, choice) {
       if (answerer.name === choice) {
-        return timer * 0.75;
+        return timer * 0.75 * 4;
       } else {
-        return timer;
+        return timer * 4;
       }
     };
 

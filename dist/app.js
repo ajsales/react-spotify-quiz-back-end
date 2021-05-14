@@ -116,6 +116,11 @@ gameNamespaces.on('connection', function (socket) {
     }
   };
 
+  var resetGame = function resetGame() {
+    game.reset();
+    namespace.emit('currentPlayers', game.currentPlayers);
+  };
+
   var endGame = function endGame() {
     namespace.emit('endGame');
   };
@@ -132,6 +137,11 @@ gameNamespaces.on('connection', function (socket) {
     var playerId = socketToPlayer[socket.id];
     var player = players[playerId];
     game.removePlayer(player);
+
+    if (game.players.length == 0) {
+      return;
+    }
+
     namespace.emit('currentPlayers', game.currentPlayers);
     console.log('A player left:', player.name);
 
@@ -140,7 +150,7 @@ gameNamespaces.on('connection', function (socket) {
     }
   });
   socket.on('startGame', function () {
-    game.reset();
+    resetGame();
     sendNewQuestion();
     console.log('Game starting!');
   });
@@ -151,7 +161,6 @@ gameNamespaces.on('connection', function (socket) {
     namespace.emit('currentPlayers', game.currentPlayers);
 
     if (game.isEveryoneFinished()) {
-      console.log('people should be finished!!');
       sendNewQuestion();
     }
   });
