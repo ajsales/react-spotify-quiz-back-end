@@ -22,11 +22,11 @@ function QuestionFactory(top50) {
    */
   var randomQuestion = function randomQuestion(players) {
     // Restricts types of questions if there are less than 4 players
-    // let questions = [IdentifyFavoriteSong, IdentifyFavoriteArtist];
-    //if (players.length >= 4) {
-    //	questions.concat([IdentifyPlayerFromSong, IdentifyPlayerFromArtist]);
-    //}
-    var questions = [IdentifyPlayerFromSong];
+    var questions = [IdentifyFavoriteSong, IdentifyFavoriteArtist];
+
+    if (players.length >= 4) {
+      questions.concat([IdentifyPlayerFromSong, IdentifyPlayerFromArtist]);
+    }
 
     var questionType = _getRandomArrEl(questions);
 
@@ -140,7 +140,7 @@ function QuestionFactory(top50) {
       return player.likesSong(song.toString, option);
     });
 
-    var choices = _getRandomPlayers(players, players[0]);
+    var choices = _getRandomPlayers(players, _getRandomArrEl(answers));
 
     var questionObj = {
       question: "Whose ".concat(option, " Top 10 song is ").concat(song.toString, "?"),
@@ -180,7 +180,7 @@ function QuestionFactory(top50) {
       return player.likesArtist(artist.name, option);
     });
 
-    var choices = _getRandomPlayers(players, players[0]);
+    var choices = _getRandomPlayers(players, _getRandomArrEl(answers));
 
     var questionObj = {
       question: "Whose ".concat(option, " Top 10 artist is ").concat(artist.name, "?"),
@@ -219,12 +219,6 @@ function QuestionFactory(top50) {
         return p.name;
       }).includes(curr.name)) {
         result.push(curr);
-      }
-
-      if (result.length >= players.length) {
-        result.push({
-          name: 'Player 1234'
-        });
       }
     }
 
