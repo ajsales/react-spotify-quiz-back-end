@@ -64,10 +64,10 @@ var Player = /*#__PURE__*/function () {
 
   }, {
     key: "likesSong",
-    value: function likesSong(song) {
-      var allSongs = this.songs['recent'].concat(this.songs['allTime']);
-      return allSongs.map(function (s) {
-        return s.title + ' by ' + s.artists;
+    value: function likesSong(song, option) {
+      var songs = this.songs[option];
+      return songs.map(function (s) {
+        return s.toString;
       }).includes(song);
     }
     /**
@@ -78,7 +78,7 @@ var Player = /*#__PURE__*/function () {
 
   }, {
     key: "likesAnySong",
-    value: function likesAnySong(songs) {
+    value: function likesAnySong(songs, option) {
       var _iterator = _createForOfIteratorHelper(songs),
           _step;
 
@@ -86,7 +86,7 @@ var Player = /*#__PURE__*/function () {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var song = _step.value;
 
-          if (this.likesSong(song)) {
+          if (this.likesSong(song, option)) {
             return true;
           }
         }
@@ -106,9 +106,9 @@ var Player = /*#__PURE__*/function () {
 
   }, {
     key: "likesArtist",
-    value: function likesArtist(artist) {
-      var allArtists = this.artists['recent'].concat(this.artists['allTime']);
-      return allArtists.map(function (a) {
+    value: function likesArtist(artist, option) {
+      var artists = this.artists[option];
+      return artists.map(function (a) {
         return a.name;
       }).includes(artist);
     }
@@ -120,7 +120,7 @@ var Player = /*#__PURE__*/function () {
 
   }, {
     key: "likesAnyArtist",
-    value: function likesAnyArtist(artists) {
+    value: function likesAnyArtist(artists, option) {
       var _iterator2 = _createForOfIteratorHelper(artists),
           _step2;
 
@@ -128,7 +128,7 @@ var Player = /*#__PURE__*/function () {
         for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
           var artist = _step2.value;
 
-          if (this.likesArtist(artist)) {
+          if (this.likesArtist(artist, option)) {
             return true;
           }
         }

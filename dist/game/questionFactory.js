@@ -22,11 +22,11 @@ function QuestionFactory(top50) {
    */
   var randomQuestion = function randomQuestion(players) {
     // Restricts types of questions if there are less than 4 players
-    var questions = [IdentifyFavoriteSong, IdentifyFavoriteArtist];
-
-    if (players.length >= 4) {
-      questions.concat([IdentifyPlayerFromSong, IdentifyPlayerFromArtist]);
-    }
+    // let questions = [IdentifyFavoriteSong, IdentifyFavoriteArtist];
+    //if (players.length >= 4) {
+    //	questions.concat([IdentifyPlayerFromSong, IdentifyPlayerFromArtist]);
+    //}
+    var questions = [IdentifyPlayerFromSong];
 
     var questionType = _getRandomArrEl(questions);
 
@@ -46,24 +46,25 @@ function QuestionFactory(top50) {
   var IdentifyFavoriteSong = function IdentifyFavoriteSong(players, option) {
     var songs = _getRandomSongs(players, option);
 
-    var preview = _getRandomArrEl(songs).preview;
+    var song = _getRandomArrEl(songs);
 
     songs = songs.map(function (song) {
       return song.toString;
     });
     players = players.filter(function (player) {
-      return player.likesAnySong(songs);
+      return player.likesAnySong(songs, option);
     });
 
     var player = _getRandomArrEl(players);
 
     var questionObj = {
       question: "What is one of ".concat(player.name, "'s ").concat(option, " Top 10 songs?"),
+      highlight: [player.name],
       choices: songs,
       answers: songs.filter(function (song) {
-        return player.likesSong(song);
+        return player.likesSong(song, option);
       }),
-      song: preview,
+      song: song,
       img: player.img
     };
 
@@ -94,24 +95,25 @@ function QuestionFactory(top50) {
 
     var artist = _getRandomArrEl(artists);
 
-    var preview = _getRandomArrEl(artist.songs).preview;
+    var song = _getRandomArrEl(artist.songs);
 
     artists = artists.map(function (a) {
       return a.name;
     });
     players = players.filter(function (player) {
-      return player.likesAnyArtist(artists);
+      return player.likesAnyArtist(artists, option);
     });
 
     var player = _getRandomArrEl(players);
 
     var questionObj = {
       question: "What is one of ".concat(player.name, "'s ").concat(option, " Top 10 artists?"),
+      highlight: [player.name],
       choices: artists,
       answers: artists.filter(function (a) {
-        return player.likesArtist(a);
+        return player.likesArtist(a, option);
       }),
-      song: preview,
+      song: song,
       img: player.img
     };
 
@@ -135,20 +137,21 @@ function QuestionFactory(top50) {
     var song = _getRandomArrEl(songs);
 
     var answers = players.filter(function (player) {
-      return player.likesSong(song);
+      return player.likesSong(song.toString, option);
     });
 
-    var choices = _getRandomPlayers(players, _getRandomArrEl(answers));
+    var choices = _getRandomPlayers(players, players[0]);
 
     var questionObj = {
       question: "Whose ".concat(option, " Top 10 song is ").concat(song.toString, "?"),
+      highlight: [song.title, song.artists],
       choices: choices.map(function (player) {
         return player.name;
       }),
       answers: answers.map(function (player) {
         return player.name;
       }),
-      song: song.preview,
+      song: song,
       img: song.img
     };
 
@@ -171,23 +174,24 @@ function QuestionFactory(top50) {
 
     var artist = _getRandomArrEl(artists);
 
-    var preview = _getRandomArrEl(artist.songs).preview;
+    var song = _getRandomArrEl(artist.songs);
 
-    var answers = player.filter(function (player) {
-      return player.likesArtist(artist);
+    var answers = players.filter(function (player) {
+      return player.likesArtist(artist.name, option);
     });
 
-    var choices = _getRandomPlayers(players, _getRandomArrEl(answers));
+    var choices = _getRandomPlayers(players, players[0]);
 
     var questionObj = {
       question: "Whose ".concat(option, " Top 10 artist is ").concat(artist.name, "?"),
+      highlight: [artist.name],
       choices: choices.map(function (player) {
         return player.name;
       }),
       answers: answers.map(function (player) {
         return player.name;
       }),
-      song: preview,
+      song: song,
       img: artist.img
     };
 
@@ -216,6 +220,12 @@ function QuestionFactory(top50) {
       }).includes(curr.name)) {
         result.push(curr);
       }
+
+      if (result.length >= players.length) {
+        result.push({
+          name: 'Player 1234'
+        });
+      }
     }
 
     return _shuffle(result);
@@ -236,9 +246,9 @@ function QuestionFactory(top50) {
       // Once it exceeds that, it'll grab a song from the extra Top 50 data
 
       if (songs.length < players.length) {
-        var _player = _getRandomArrEl(players);
+        var player = _getRandomArrEl(players);
 
-        song = _player.pickRandomSong(option);
+        song = player.pickRandomSong(option);
       } else {
         song = _getRandomArrEl(top50.songs);
       } // Doesn't add song if already in array
@@ -269,9 +279,9 @@ function QuestionFactory(top50) {
       // Once it exceeds that, it'll grab an artist from the extra Top 50 data
 
       if (artists.length < players.length) {
-        var _player2 = _getRandomArrEl(players);
+        var player = _getRandomArrEl(players);
 
-        artist = _player2.pickRandomArtist(option);
+        artist = player.pickRandomArtist(option);
       } else {
         artist = _getRandomArrEl(top50.artists);
       } // Doesn't add artist if already in array

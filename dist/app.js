@@ -108,11 +108,9 @@ gameNamespaces.on('connection', function (socket) {
   var sendNewQuestion = function sendNewQuestion() {
     if (game.pastQuestions.length < 10) {
       var question = game.question();
-      setTimeout(function () {
-        namespace.emit('newQuestion', question);
-        namespace.emit('playSong', question.song);
-        namespace.emit('startTimer');
-      }, 3000);
+      namespace.emit('newQuestion', question);
+      namespace.emit('playSong', question.song);
+      namespace.emit('startTimer');
     } else {
       endGame();
     }
