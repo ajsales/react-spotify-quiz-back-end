@@ -29,7 +29,7 @@ var Game = /*#__PURE__*/function () {
   function Game(host, top50) {
     _classCallCheck(this, Game);
 
-    this.host = host.name;
+    this.host = host.id;
     this.players = [host];
     this.points = _defineProperty({}, host.name, 0);
     this.id = (0, _getRandomString["default"])(6);
@@ -83,8 +83,14 @@ var Game = /*#__PURE__*/function () {
         return player.name !== oldPlayer.name;
       });
 
-      if (oldPlayer.name in this.answered) {
-        delete this.answered[oldPlayer.name];
+      if (this.players.length > 0) {
+        if (this.host === oldPlayer.id) {
+          this.host = this.players[0].id;
+        }
+
+        if (oldPlayer.name in this.answered) {
+          delete this.answered[oldPlayer.name];
+        }
       }
     }
     /**

@@ -91,6 +91,11 @@ roomsNamespace.on('connection', function (socket) {
 
   socket.on('newRoom', function (playerId, callback) {
     var host = players[playerId];
+
+    if (host === undefined) {
+      socket.emit('redirectToHome');
+    }
+
     var game = new _Game["default"](host, top50);
     games[game.id] = game;
     callback(game.id);
@@ -104,6 +109,10 @@ gameNamespaces.on('connection', function (socket) {
   var namespace = socket.nsp;
   var gameId = namespace.name.substring(6);
   var game = games[gameId];
+
+  if (game === undefined) {
+    socket.emit('redirectToRooms');
+  }
 
   var sendNewQuestion = function sendNewQuestion() {
     if (game.pastQuestions.length < 10) {
@@ -126,19 +135,40 @@ gameNamespaces.on('connection', function (socket) {
   };
 
   socket.on('joinGame', function (playerId, callback) {
+    if (game === undefined) {
+      return;
+    }
+
     var player = players[playerId];
+
+    if (player !== undefined) {
+      callback();
+    } else {
+      callback('You must re-login!');
+      return;
+    }
+
     game.addPlayer(player);
     namespace.emit('currentPlayers', game.currentPlayers);
-    callback();
     socketToPlayer[socket.id] = playerId;
     console.log('A new player joined:', player.name);
   });
   socket.on('disconnecting', function () {
     var playerId = socketToPlayer[socket.id];
+
+    if (playerId === undefined) {
+      return;
+    }
+
     var player = players[playerId];
+
+    if (player === undefined) {
+      return;
+    }
+
     game.removePlayer(player);
 
-    if (game.players.length == 0) {
+    if (game.players.length === 0) {
       return;
     }
 
