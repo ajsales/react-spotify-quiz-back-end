@@ -115,7 +115,7 @@ gameNamespaces.on('connection', function (socket) {
   }
 
   var sendNewQuestion = function sendNewQuestion() {
-    if (game.pastQuestions.length < 10) {
+    if (game.pastQuestions.length < 5) {
       var question = game.question();
       namespace.emit('newQuestion', question);
       namespace.emit('playSong', question.song);
@@ -127,7 +127,7 @@ gameNamespaces.on('connection', function (socket) {
 
   var resetGame = function resetGame() {
     game.reset();
-    namespace.emit('currentPlayers', game.currentPlayers);
+    namespace.emit('currentPlayers', game.currentPlayers, game.host);
   };
 
   var endGame = function endGame() {
@@ -141,15 +141,14 @@ gameNamespaces.on('connection', function (socket) {
 
     var player = players[playerId];
 
-    if (player !== undefined) {
-      callback();
-    } else {
+    if (player === undefined) {
       callback('You must re-login!');
       return;
     }
 
     game.addPlayer(player);
-    namespace.emit('currentPlayers', game.currentPlayers);
+    callback(game.pastQuestions.length > 0);
+    namespace.emit('currentPlayers', game.currentPlayers, game.host);
     socketToPlayer[socket.id] = playerId;
     console.log('A new player joined:', player.name);
   });
@@ -172,7 +171,7 @@ gameNamespaces.on('connection', function (socket) {
       return;
     }
 
-    namespace.emit('currentPlayers', game.currentPlayers);
+    namespace.emit('currentPlayers', game.currentPlayers, game.host);
     console.log('A player left:', player.name);
 
     if (game.isEveryoneFinished()) {
@@ -188,7 +187,7 @@ gameNamespaces.on('connection', function (socket) {
     var playerId = socketToPlayer[socket.id];
     var player = players[playerId];
     game.answerQuestion(player, correct, timer, choice);
-    namespace.emit('currentPlayers', game.currentPlayers);
+    namespace.emit('currentPlayers', game.currentPlayers, game.host);
 
     if (game.isEveryoneFinished()) {
       sendNewQuestion();
