@@ -16,7 +16,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
  */
 function QuestionFactory(top50) {
   /**
-   * Returns a random question.
+   * Returns a random question and point calculator.
    *
    * @param {Player[]} players Array of the players in the game
    */
@@ -37,6 +37,7 @@ function QuestionFactory(top50) {
   /**
    * Returns a question of the type:
    * "What is one of Player 1's all-time Top 10 songs?"
+   * and also a point calculator for the question.
    *
    * @param {Player[]} players Array of the players in the game
    * @param {string} option The Top 10 lists to be used
@@ -84,6 +85,7 @@ function QuestionFactory(top50) {
   /**
    * Returns a question of the type:
    * "What is one of Player 1's all-time Top 10 artists?"
+   * and also a point calculator for the question.
    *
    * @param {Player[]} players Array of the players in the game
    * @param {string} option The Top 10 lists to be used
@@ -130,6 +132,15 @@ function QuestionFactory(top50) {
       pointCalculator: pointCalculator
     };
   };
+  /**
+   * Returns a question of the type:
+   * "Whose all-time Top 10 song is La La Lost You by NIKI?"
+   * and also a point calculator for the question.
+   *
+   * @param {Player[]} players Array of the players in the game
+   * @param {string} option The Top 10 lists to be used
+   */
+
 
   var IdentifyPlayerFromSong = function IdentifyPlayerFromSong(players, option) {
     var songs = _getRandomSongs(players, option);
@@ -168,6 +179,15 @@ function QuestionFactory(top50) {
       pointCalculator: pointCalculator
     };
   };
+  /**
+   * Returns a question of the type:
+   * "Whose recent Top 10 artist is Ruel?"
+   * and also a point calculator for the question.
+   *
+   * @param {Player[]} players Array of the players in the game
+   * @param {string} option The Top 10 lists to be used
+   */
+
 
   var IdentifyPlayerFromArtist = function IdentifyPlayerFromArtist(players, option) {
     var artists = _getRandomArtists(players, option);
