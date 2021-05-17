@@ -35,8 +35,9 @@ var Player = /*#__PURE__*/function () {
   _createClass(Player, [{
     key: "pickRandomSong",
     value: function pickRandomSong(option) {
-      var index = (0, _getRandomInt["default"])(10);
-      return this.songs[option][index];
+      var songList = this.songs[option];
+      var index = (0, _getRandomInt["default"])(songList.length);
+      return songList[index];
     }
     /**
      * Returns random artist from given list.
@@ -47,8 +48,9 @@ var Player = /*#__PURE__*/function () {
   }, {
     key: "pickRandomArtist",
     value: function pickRandomArtist(option) {
-      var index = (0, _getRandomInt["default"])(10);
-      return this.artists[option][index];
+      var artistList = this.artists[option];
+      var index = (0, _getRandomInt["default"])(artistList.length);
+      return artistList[index];
     }
     /**
      * Returns true if player has song in their Top 10 lists
