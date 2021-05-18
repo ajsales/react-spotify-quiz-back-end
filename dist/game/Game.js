@@ -37,6 +37,10 @@ var Game = /*#__PURE__*/function () {
     this.answered = {};
     this.pastQuestions = [];
   }
+  /**
+   * Sends player array for front-end to display.
+   */
+
 
   _createClass(Game, [{
     key: "currentPlayers",
@@ -52,7 +56,7 @@ var Game = /*#__PURE__*/function () {
       });
     }
     /**
-     * Adds player to game's list of players
+     * Adds player to game's list of players.
      * 
      * @param {Player} newPlayer The player to be added
      */
@@ -64,14 +68,15 @@ var Game = /*#__PURE__*/function () {
         return p.name;
       }).includes(newPlayer.name)) {
         this.players.push(newPlayer);
-      }
+      } // Initializes player in points array
+
 
       if (!(newPlayer.name in this.points)) {
         this.points[newPlayer.name] = 0;
       }
     }
     /**
-     * Removes player from game's list of player
+     * Removes player from game's list of players.
      * 
      * @param {Player} oldPlayer The player to be removed
      */
@@ -86,7 +91,9 @@ var Game = /*#__PURE__*/function () {
       if (this.players.length > 0) {
         if (this.host === oldPlayer.id) {
           this.host = this.players[0].id;
-        }
+        } // Removes player from answered array so game
+        // isn't frozen with removed player
+
 
         if (oldPlayer.name in this.answered) {
           delete this.answered[oldPlayer.name];
@@ -102,15 +109,17 @@ var Game = /*#__PURE__*/function () {
     value: function question() {
       var _this$questionFactory = this.questionFactory(this.players),
           questionObj = _this$questionFactory.questionObj,
-          pointCalculator = _this$questionFactory.pointCalculator;
+          pointCalculator = _this$questionFactory.pointCalculator; // Checks to see if question has already been asked already
+
 
       while (askedAlready(questionObj, this.pastQuestions)) {
         var _this$questionFactory2 = this.questionFactory(this.players),
             _questionObj = _this$questionFactory2.questionObj,
             _pointCalculator = _this$questionFactory2.pointCalculator;
-      }
+      } // Sets current point calculator
 
-      this.pointCalculator = pointCalculator;
+
+      this.pointCalculator = pointCalculator; // Initalizes answered array to false
 
       var _iterator = _createForOfIteratorHelper(this.players),
           _step;
@@ -129,6 +138,14 @@ var Game = /*#__PURE__*/function () {
       this.pastQuestions.push(questionObj);
       return questionObj;
     }
+    /**
+     * Notes player answering a question and gives them points of correct.
+     * 
+     * @param {Player} player The player who answered
+     * @param {boolean} correct True, if player answered correctly
+     * @param {int} timer Time left when player answered
+     */
+
   }, {
     key: "answerQuestion",
     value: function answerQuestion(player, correct, timer) {
@@ -138,17 +155,21 @@ var Game = /*#__PURE__*/function () {
         this.points[player.name] += this.pointCalculator(player, timer);
       }
     }
+    /**
+     * Returns true if everyone answered current question.
+     */
+
   }, {
     key: "isEveryoneFinished",
     value: function isEveryoneFinished() {
-      for (var player in this.answered) {
-        if (!this.answered[player]) {
-          return false;
-        }
-      }
-
-      return true;
+      return Object.values(this.answered).every(function (value) {
+        return value;
+      });
     }
+    /**
+     * Resets game.
+     */
+
   }, {
     key: "reset",
     value: function reset() {
@@ -161,50 +182,40 @@ var Game = /*#__PURE__*/function () {
   }]);
 
   return Game;
-}();
+}(); // Helper function for if question has already been asked
+
 
 exports["default"] = Game;
 
 var askedAlready = function askedAlready(question, questionList) {
-  var _iterator2 = _createForOfIteratorHelper(questionList),
+  return questionList.some(function (pastQuestion) {
+    return areQuestionsEqual(question, pastQuestion);
+  });
+}; // Helper function for if two questions are equal
+// (i.e. when question prompt is the same and the
+// choices are the same)
+
+
+var areQuestionsEqual = function areQuestionsEqual(q1, q2) {
+  return q1.question === q2.question && areArraysEqual(q1.choices, q2.choices);
+}; // Helper function for if two arrays are equal
+
+
+var areArraysEqual = function areArraysEqual(arr1, arr2) {
+  if (arr1.length !== arr2.length) return false;
+
+  var _iterator2 = _createForOfIteratorHelper(arr1),
       _step2;
 
   try {
     for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-      var pastQuestion = _step2.value;
-
-      if (areQuestionsEqual(question, pastQuestion)) {
-        return true;
-      }
+      var a = _step2.value;
+      if (!arr2.includes(a)) return false;
     }
   } catch (err) {
     _iterator2.e(err);
   } finally {
     _iterator2.f();
-  }
-
-  return false;
-};
-
-var areQuestionsEqual = function areQuestionsEqual(q1, q2) {
-  return q1.question === q2.question && areArraysEqual(q1.choices, q2.choices);
-};
-
-var areArraysEqual = function areArraysEqual(arr1, arr2) {
-  if (arr1.length !== arr2.length) return false;
-
-  var _iterator3 = _createForOfIteratorHelper(arr1),
-      _step3;
-
-  try {
-    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-      var a = _step3.value;
-      if (!arr2.includes(a)) return false;
-    }
-  } catch (err) {
-    _iterator3.e(err);
-  } finally {
-    _iterator3.f();
   }
 
   return true;

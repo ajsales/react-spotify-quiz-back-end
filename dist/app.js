@@ -90,16 +90,22 @@ roomsNamespace.on('connection', function (socket) {
   console.log(socket.id, 'requesting rooms.'); // Creates new room (i.e. Game instance) and stores it into dictionary
 
   socket.on('newRoom', function (playerId, callback) {
-    var host = players[playerId];
+    var host = players[playerId]; // Server message for player to redirect to Home page
+    // if server doesn't havetheir data
 
     if (host === undefined) {
       socket.emit('redirectToHome');
     }
 
     var game = new _Game["default"](host, top50);
-    games[game.id] = game;
+    games[game.id] = game; // Callback for player to redirect to Game page
+
     callback(game.id);
-    console.log('New game started:', game.id);
+    console.log('New game started:', game.id); // Sends updated available room list to players
+    // currently on Rooms page
+
+    rooms = Object.keys(games);
+    socket.broadcast.emit('availableRooms');
   });
 }); // Namespaces to deal with game page
 // (Each individual game has their respective namespace)
@@ -108,36 +114,46 @@ gameNamespaces.on('connection', function (socket) {
   // Gets specific game
   var namespace = socket.nsp;
   var gameId = namespace.name.substring(6);
-  var game = games[gameId];
+  var game = games[gameId]; // Server message for player to redirect
+  // if game doesn't exist
 
   if (game === undefined) {
     socket.emit('redirectToRooms');
-  }
+  } // Sends new question
+
 
   var sendNewQuestion = function sendNewQuestion() {
-    if (game.pastQuestions.length < 5) {
+    // Ends game if 15 questions have already been sent
+    if (game.pastQuestions.length < 15) {
       var question = game.question();
       namespace.emit('newQuestion', question);
-      namespace.emit('playSong', question.song);
-      namespace.emit('startTimer');
     } else {
       endGame();
     }
-  };
+  }; // Resets game if playing again
+
 
   var resetGame = function resetGame() {
-    game.reset();
+    game.reset(); // Sends players again with zero-ed out points
+
     namespace.emit('currentPlayers', game.currentPlayers, game.host);
-  };
+  }; // Server message for players to end game
+
 
   var endGame = function endGame() {
     namespace.emit('endGame');
-  };
+  }; // Adds new player to game
+
 
   socket.on('joinGame', function (playerId, callback) {
+    // Server message for player to redirect
+    // if game doesn't exist
     if (game === undefined) {
+      socket.emit('redirectToRooms');
       return;
-    }
+    } // Server message for player to redirect
+    // if it doesn't have their data
+
 
     var player = players[playerId];
 
@@ -146,48 +162,66 @@ gameNamespaces.on('connection', function (socket) {
       return;
     }
 
-    game.addPlayer(player);
-    callback(game.pastQuestions.length > 0);
+    game.addPlayer(player); // Callback to tell player if game already started
+
+    callback(game.pastQuestions.length > 0); // Sends updated players and host to everyone
+    // currently in the game
+
     namespace.emit('currentPlayers', game.currentPlayers, game.host);
     socketToPlayer[socket.id] = playerId;
     console.log('A new player joined:', player.name);
-  });
+  }); // Removes disconnecting players
+
   socket.on('disconnecting', function () {
+    // Grabs player from socket-to-player dictionary
+    // as it wouldn't know who was disconnecting otherwise
     var playerId = socketToPlayer[socket.id];
 
     if (playerId === undefined) {
       return;
-    }
+    } // Checks to see if player data exists
+
 
     var player = players[playerId];
 
     if (player === undefined) {
       return;
-    }
+    } // Removes player and updates host if disconnecting
+    // player was the host
 
-    game.removePlayer(player);
+
+    game.removePlayer(player); // CHecks to see if last player in game
 
     if (game.players.length === 0) {
       return;
-    }
+    } // Sends updated players to all players still
+    // in the game
+
 
     namespace.emit('currentPlayers', game.currentPlayers, game.host);
-    console.log('A player left:', player.name);
+    console.log('A player left:', player.name); // Checks to see if disconnecting player
+    // was last person to not have answered question
+    // so that game can proceed
 
     if (game.isEveryoneFinished()) {
       sendNewQuestion();
     }
-  });
+  }); // Starts game
+
   socket.on('startGame', function () {
+    // Resets game if playing again
     resetGame();
     sendNewQuestion();
     console.log('Game starting!');
-  });
+  }); // Server response to a player answering the current question
+
   socket.on('answeredQuestion', function (correct, timer, choice) {
     var playerId = socketToPlayer[socket.id];
-    var player = players[playerId];
-    game.answerQuestion(player, correct, timer, choice);
-    namespace.emit('currentPlayers', game.currentPlayers, game.host);
+    var player = players[playerId]; // Adds points if player answered correctly
+
+    game.answerQuestion(player, correct, timer, choice); // Sends players with updated point totals
+
+    namespace.emit('currentPlayers', game.currentPlayers, game.host); // Checks to see if player was last person to answer
 
     if (game.isEveryoneFinished()) {
       sendNewQuestion();
