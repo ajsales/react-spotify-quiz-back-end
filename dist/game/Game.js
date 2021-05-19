@@ -197,7 +197,7 @@ var askedAlready = function askedAlready(question, questionList) {
 
 
 var areQuestionsEqual = function areQuestionsEqual(q1, q2) {
-  return q1.question === q2.question && areArraysEqual(q1.choices, q2.choices);
+  return q1.question === q2.question && areArraysEqual(q1.choices, q2.answers);
 }; // Helper function for if two arrays are equal
 
 

@@ -105,7 +105,7 @@ roomsNamespace.on('connection', function (socket) {
     // currently on Rooms page
 
     rooms = Object.keys(games);
-    socket.broadcast.emit('availableRooms');
+    socket.broadcast.emit('availableRooms', rooms);
   });
 }); // Namespaces to deal with game page
 // (Each individual game has their respective namespace)
@@ -125,8 +125,13 @@ gameNamespaces.on('connection', function (socket) {
   var sendNewQuestion = function sendNewQuestion() {
     // Ends game if 15 questions have already been sent
     if (game.pastQuestions.length < 15) {
-      var question = game.question();
-      namespace.emit('newQuestion', question);
+      // Gives last player to answer to see if their
+      // answer was correct or not
+      setTimeout(function () {
+        var question = game.question();
+        namespace.emit('newQuestion', question);
+      }, 2000);
+      console.log('Sending a new question to Game:', gameId);
     } else {
       endGame();
     }
@@ -142,6 +147,7 @@ gameNamespaces.on('connection', function (socket) {
 
   var endGame = function endGame() {
     namespace.emit('endGame');
+    console.log('Ending Game:', gameId);
   }; // Adds new player to game
 
 
@@ -212,7 +218,7 @@ gameNamespaces.on('connection', function (socket) {
     // Resets game if playing again
     resetGame();
     sendNewQuestion();
-    console.log('Game starting!');
+    console.log('Game starting:', gameId);
   }); // Server response to a player answering the current question
 
   socket.on('answeredQuestion', function (correct, timer, choice) {
