@@ -25,7 +25,7 @@ function QuestionFactory(top50) {
     var questions = [IdentifyFavoriteSong, IdentifyFavoriteArtist];
 
     if (players.length >= 4) {
-      questions.concat([IdentifyPlayerFromSong, IdentifyPlayerFromArtist]);
+      questions = questions.concat([IdentifyPlayerFromSong, IdentifyPlayerFromArtist]);
     }
 
     var questionType = _getRandomArrEl(questions);
